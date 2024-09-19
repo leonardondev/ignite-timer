@@ -27,7 +27,6 @@ export function Countdown() {
           markCurrentCycleAsFinished()
           updateSecondsPassed(totalSeconds)
           clearInterval(interval)
-          // setActiveCycleId(null)
         } else {
           updateSecondsPassed(differenceInSeconds)
         }
