@@ -13,6 +13,7 @@
     "@hookform/resolvers": "^3.9.0",
     "@phosphor-icons/react": "^2.1.7",
     "dayjs": "^1.11.13",
+    "immer": "^10.1.1",
     "react": "^18.0.0",
     "react-dom": "^18.0.0",
     "react-hook-form": "^7.53.0",
