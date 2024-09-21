@@ -1,7 +1,9 @@
+import dayjs from 'dayjs'
 import {
   createContext,
   ReactNode,
   useContext,
+  useEffect,
   useReducer,
   useState,
 } from 'react'
@@ -37,15 +39,41 @@ const CyclesContext = createContext({} as CyclesContextType)
 export function CyclesContextProvider({
   children,
 }: CyclesContextProviderProps) {
-  const [cycleState, dispatchCycles] = useReducer(cyclesReducer, {
-    cycles: [],
-    activeCycleId: null,
+  const [cyclesState, dispatchCycles] = useReducer(
+    cyclesReducer,
+    {
+      cycles: [],
+      activeCycleId: null,
+    },
+    (initialState) => {
+      const storedStateJSON = localStorage.getItem(
+        '@ignite-timer:cycle-state-1.0.0',
+      )
+
+      if (storedStateJSON) {
+        return JSON.parse(storedStateJSON)
+      }
+
+      return initialState
+    },
+  )
+
+  const { cycles, activeCycleId } = cyclesState
+  const activeCycle = cycles.find((cycle) => cycle.id === activeCycleId)
+
+  const [amountSecondsPassed, setAmountSecondsPassed] = useState(() => {
+    if (activeCycle) {
+      return dayjs().diff(dayjs(activeCycle.startDate), 'seconds')
+    }
+
+    return 0
   })
 
-  const [amountSecondsPassed, setAmountSecondsPassed] = useState(0)
+  useEffect(() => {
+    const stateJSON = JSON.stringify(cyclesState)
 
-  const { cycles, activeCycleId } = cycleState
-  const activeCycle = cycles.find((cycle) => cycle.id === activeCycleId)
+    localStorage.setItem('@ignite-timer:cycle-state-1.0.0', stateJSON)
+  }, [cyclesState])
 
   function updateSecondsPassed(seconds: number) {
     setAmountSecondsPassed(seconds)
